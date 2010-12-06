@@ -19,18 +19,30 @@ Getting Started
 * Apache2 Flash Site Policy Module
 * Forge
 
+* You will need to replace "webid.digitalbazaar.com" with your provider domain
+in both the provider and verifier code.
+* You will need to replace "payswarm.com" with your verifier domain in both
+the provider and verifier code.
+
 ### Setting up Apache2
 
-*
+* Follow the instructions in the Forge README for adding mod_fsp to your
+Apache install. This will enable cross-domain communication between your
+provider and verifier.
 
 ### Setting up the Provider
 
 * The provider will need the Forge JavaScript libraries
   https://github.com/digitalbazaar/forge
+* The provider will need to serve the provider/ directory.
 
 ### Setting up the Verifier
 
-
+* The verifier will need to serve the verifier/ directory.
 
 ### Performing a Test Login
 
+* First, using a web browser, navigate to the provider server and create
+a WebID.
+* Second, navigate to the verifier server and follow the on screen
+instructions to attempt a login using your created WebID.
