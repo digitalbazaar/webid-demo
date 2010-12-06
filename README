@@ -1,0 +1,26 @@
+WebID Demo
+==========
+
+A demonstration implementation of using the WebID protocol to perform
+login on a website without the need for browser-based client-certificate
+support.
+
+Introduction
+------------
+
+
+Getting Started
+---------------
+
+### Requirements
+
+* Apache2
+* PHP5
+* Apache2 Flash Site Policy Module
+* Forge
+
+### Setting up Apache2
+
+
+### Performing a Test Login
+
