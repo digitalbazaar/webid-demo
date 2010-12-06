@@ -1,0 +1,211 @@
+/* WebID Manager CSS */
+
+* {
+margin: 0;
+padding: 0;
+}
+
+html {
+}
+
+body {
+color: #333;
+background-color: #fff;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+font-size: 11px;
+}
+
+a {
+color: #390;
+text-decoration: none;
+}
+
+a:hover, a:active {
+text-decoration: underline;
+}
+
+p {
+margin: 10px 0;
+}
+
+.clear {
+clear: both;
+}
+
+.hidden {
+display: none;
+}
+
+.right {
+float: right;
+}
+
+#header {
+padding: 10px;
+position: relative;
+color: #fff;
+background-color: #390;
+}
+
+#login #header {
+padding: 4px;
+}
+
+h1 {
+font-size: 24px;
+}
+
+#login h1 {
+font-size: 18px;
+}
+
+#header a {
+color: #fff;
+}
+
+.col {
+width: 960px;
+margin: 0 auto;
+}
+
+#content {
+padding: 20px 0;
+}
+
+#login #content {
+padding: 5px;
+}
+
+#footer {
+width: 960px;
+margin: 20px auto 0;
+color: #bbb;
+border-top: 1px solid #ccc;
+}
+
+#footer p {
+margin: 10px;
+}
+
+#copyright {
+float: left;
+}
+
+#copyright a {
+color: #aaa;
+}
+
+#legal {
+float: right;
+}
+
+/*-- Web IDs --*/
+.box {
+margin: 20px auto;
+padding: 15px;
+border: 1px solid #ccc;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+}
+
+.box h2 {
+margin-bottom: 10px;
+padding-bottom: 10px;
+border-bottom: 1px solid #ccc;
+font-size: 16px;
+line-height: 20px;
+}
+
+.row {
+clear: left;
+margin: 10px 0;
+}
+
+label {
+color: #666;
+cursor: pointer;
+display: block;
+float: left;
+font-weight: bold;
+padding: 3px 0;
+vertical-align: middle;
+width: 200px;
+}
+
+input {
+width: 300px;
+margin: 0;
+padding-bottom: 4px;
+border: 1px solid #390;
+padding: 3px;
+}
+
+button.green, button.red, button.blue {
+border: 0 none;
+color: #fff;
+cursor: pointer;
+display: inline-block;
+font-size: 13px;
+font-weight: bold;
+margin: 0;
+padding: 2px 6px;
+white-space: nowrap;
+text-align: center;
+background-color: #390;
+background-position: 0 -48px;
+border: 1px solid #6c0;
+border-color: #6c0 #160 #160 #160;
+-moz-box-shadow: 0 1px 0 #ddd;
+}
+
+button.red {
+background-color: #c00;
+border-color: #e00 #900 #900 #900;
+}
+
+button.blue {
+background-color: #06c;
+border-color: #06e #039 #039 #039;
+}
+
+#b-clear {
+float: right;
+}
+
+.error {
+padding: 10px;
+background-color: #FFEBE8;
+border: 1px solid #DD3C10;
+}
+
+.error h2 {
+font-size: 13px;
+}
+
+.error a {
+color: #dd3c10;
+}
+
+.status {
+font-weight: bold;
+}
+
+#webids {
+margin-top: 10px;
+padding: 5px;
+border: 1px solid #ddd;
+}
+
+.webid {
+margin-bottom: 10px;
+padding-bottom: 10px;
+border-bottom: 1px dotted #ddd;
+}
+
+.webid p {
+margin: 2px 0 2px 20px;
+}
+
+#options p {
+margin-left: 200px;
+}
