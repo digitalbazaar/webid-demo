@@ -8,6 +8,17 @@ support.
 Introduction
 ------------
 
+This is an experimental implementation of the WebID protocol. Typically,
+WebID requires there to be native browser support for client-side 
+certificates in web browsers. This particular implementation of WebID
+does not require any native browser support. JavaScript is used to 
+perform all of the cryptography support while Flash is used to perform
+cross-domain socket communication. Over time, we expect the Flash requirement
+to go away and pure JavaScript to drive the WebID login process as 
+native socket support in Web Browsers is improved. The benefit to 
+this approach is that the website stays in control of the entire login 
+process instead of relegating the login flow to a, depending on the browser, 
+bad UI.
 
 Getting Started
 ---------------
