@@ -17,7 +17,7 @@ Getting Started
 * Apache2
 * PHP5
 * librdf (redland)
-* Apache2 Flash Site Policy Module
+* Apache2 Flash Socket Policy Module
 * Forge
 
 * You will need to replace "webid.digitalbazaar.com" with your provider domain
