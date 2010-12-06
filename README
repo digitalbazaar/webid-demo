@@ -16,6 +16,7 @@ Getting Started
 
 * Apache2
 * PHP5
+* librdf (redland)
 * Apache2 Flash Site Policy Module
 * Forge
 
@@ -34,6 +35,7 @@ provider and verifier.
 
 * The provider will need the Forge JavaScript libraries
   https://github.com/digitalbazaar/forge
+* Place the forge javascript and swf into the provider/forge directory.
 * The provider will need to serve the provider/ directory.
 
 ### Setting up the Verifier
