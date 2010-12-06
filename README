@@ -21,6 +21,16 @@ Getting Started
 
 ### Setting up Apache2
 
+*
+
+### Setting up the Provider
+
+* The provider will need the Forge JavaScript libraries
+  https://github.com/digitalbazaar/forge
+
+### Setting up the Verifier
+
+
 
 ### Performing a Test Login
 
