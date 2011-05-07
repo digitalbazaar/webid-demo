@@ -23,7 +23,8 @@ var webidLogin = function(url)
       '?domain=payswarm.com' +
       '&auth=webid-demo/auth.php' +
       '&redirect=webid-demo/redirect.html' +
-      '&pport=80';
+      '&pport=80' +
+      '&wsport=8123';
    $('#webid-frame').html(
       '<iframe id="webid-iframe" src="' + url + '"></iframe>');
 };
