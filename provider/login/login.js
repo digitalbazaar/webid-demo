@@ -15,19 +15,20 @@
       init($);
    };
    swfobject.embedSWF(
-      'forge/SocketPool.swf', 'socketPool', '0', '0', '9.0.0',
+      '/forge/SocketPool.swf', 'socketPool', '0', '0', '9.0.0',
       false, {}, {allowscriptaccess: 'always'}, {});
 })(jQuery);
 
 var createFlashButton = function(options, webid, id)
 {
-   var button =
-      $('<button class="blue right webid-button">Select (Flash)</button>');
-   button.attr('id', 'fs-' + (webid + id));
+   var button = $('<button id="b-select-flash-' + id + '" \
+      class="control right">Select (Flash)</button>');
    button.click(function()
    {
-      // disable webid buttons
-      $('.webid-button').attr('disabled', 'disabled');
+      // disable UI
+      $('button.control').attr('disabled', 'disabled');
+      $('.webid[id!=webid-' + id + ']').fadeTo('fast', 0.5);
+      setStatus('#status-login', 'Logging in...', true);
       
       // set chosen webid
       options.webid = webid;
@@ -40,22 +41,17 @@ var createFlashButton = function(options, webid, id)
          url: '/' + options.auth,
          success: function(data, textStatus, xhr)
          {
-            // on success, return response via window.name
-            if(data !== '')
-            {
-               forge.log.debug(cat, 'Authentication PASSED');
-               //forge.log.debug(cat, 'authentication data', data);
-               window.name = data;
-            }
-            else
-            {
-               forge.log.error(cat, 'Authentication FAILED', arguments);
-            }
+            window.name = data;
             window.location = options.redirect;
          },
          error: function(xhr, textStatus, errorThrown)
          {
             forge.log.error(cat, 'Authentication FAILED', arguments);
+            
+            // enable UI
+            $('button.control').removeAttr('disabled');
+            $('.webid[id!=webid-' + id + ']').fadeTo('fast', 1);
+            setStatus('#status-login', 'Logging in...', false, true);
          },
          xhr: forge.xhr.create
       });
@@ -65,13 +61,14 @@ var createFlashButton = function(options, webid, id)
 
 var createWebSocketButton = function(options, webid, id)
 {
-   var button =
-      $('<button class="blue right webid-button">Select (WebSocket)</button>');
-   button.attr('id', 'ws-' + (webid + id));
+   var button = $('<button id="b-select-ws-' + id + '" \
+      class="control right">Select (WebSocket)</button>');
    button.click(function()
    {
-      // disable webid buttons
-      $('.webid-button').attr('disabled', 'disabled');
+      // disable UI
+      $('button.control').attr('disabled', 'disabled');
+      $('.webid[id!=webid-' + id + ']').fadeTo('fast', 0.5);
+      setStatus('#status-login', 'Logging in...', true);
       
       // set chosen webid
       options.webid = webid;
@@ -115,7 +112,7 @@ var createWebSocketButton = function(options, webid, id)
             //forge.log.debug(cat, 'Client received \"' + response + '\"');
             try
             {
-               // on success, return response via window.name
+               // return response via window.name
                if(JSON.parse(response).success)
                {
                   window.name = response;
@@ -150,13 +147,14 @@ var createWebSocketButton = function(options, webid, id)
       ws.onclose = function(evt)
       {
          forge.log.debug(cat, 'WebSocket closed');
-         if(window.name !== '')
-         {
-            forge.log.debug(cat, 'Authentication PASSED');
-         }
-         else
+         if(window.name === '')
          {
             forge.log.error(cat, 'Authentication FAILED');
+            
+            // enable UI
+            $('button.control').removeAttr('disabled');
+            $('.webid[id!=webid-' + id + ']').fadeTo('fast', 1);
+            setStatus('#status-login', 'Logging in...', false, true);
          }
          window.location = options.redirect;
       };
@@ -164,42 +162,156 @@ var createWebSocketButton = function(options, webid, id)
    return button;
 };
 
-var createWebIdItem = function(options, webid, id)
+var createWebIdCard = function(options, title, webid, id)
 {
-   var item = $('<div class="webid"></div>');
+   // create the WebID card template
+   var card = $('<div id="webid-' + id + '" class="webid"> \
+      <div class="webid-image"> \
+         <img src="/identity.png" /> \
+      </div> \
+      <div class="webid-options"></div> \
+      <div class="webid-info"> \
+         <p class="webid-title"></p> \
+         <p class="webid-common-name"></p> \
+         <p class="webid-email"></p> \
+         <p class="webid-location"></p> \
+         <p class="webid-uri"></p> \
+      </div> \
+      <div id="webid-details-' + id + '" class="webid-details hidden clear"> \
+         <p class="detail-title">Providers</p> \
+         <div class="row"> \
+            <span class="label">PaySwarm</span> \
+            <span class="value"><a href="http://payswarm.com">PaySwarm</a></span> \
+         </div> \
+         <div class="row"> \
+            <span class="label">Music Registration</span> \
+            <span class="value"><a href="http://connectedmediaexperience.org/">Connected Media Experience</a></span> \
+         </div> \
+         <div class="row"> \
+            <span class="label">Microblogging</span> \
+            <span class="value"><a href="http://twitter.com">Twitter</a></span> \
+         </div> \
+         <p class="detail-title">Public Key</p> \
+         <div class="row"> \
+            <span class="label">Modulus</span> \
+            <span class="webid-modulus value"></span> \
+         </div> \
+         <div class="row"> \
+            <span class="label">Exponent</span> \
+            <span class="webid-exponent value"></span> \
+         </div> \
+         <p class="detail-title">Private Information</p> \
+         <div class="row"> \
+            <span class="label">Private Key</span> \
+            <span class="webid-pkey value"></span> \
+         </div> \
+         <div class="row"> \
+            <span class="label">Certificate</span> \
+            <span class="webid-cert value"></span> \
+         </div> \
+      </div> \
+      <div class="clear"></div> \
+      </div>');
+   
+   /* WebID Card Options */
    
    // add button to do WebID auth using flash
-   if(flashApi !== null)
+   if(options.flashApi !== null)
    {
       var button = createFlashButton(options, webid, id);
-      item.append(button);
+      $('.webid-options', card).append(button);
    }
    // add button to do WebID auth using WebSockets
    if(typeof(WebSocket) !== 'undefined' && options.wsPort !== null)
    {
       var button = createWebSocketButton(options, webid, id);
-      item.append(button);
+      $('.webid-options', card).append(button);
    }
-   item.append(
-      '<h3>' + name + '</h3>' +
-      '<h4><a href="' + webid.uri + '">' + webid.uri + '</a></h4>');
    
-   // display certificate attributes
+   /* WebID Card Info */
    var cert = forge.pki.certificateFromPem(webid.certificate);
+
+   // get WebID info section
+   var info = $('.webid-info', card);
+
+   // add WebID Card title
+   $('.webid-title', info).html(title);
+
+   // add WebID Common Name
+   var fullname = cert.subject.getField({name: 'commonName'});
+   fullname = fullname ? fullname.value : '';
+   $('.webid-common-name', info).html(fullname);
+
+   // add WebID email
+   var email = cert.subject.getField({name: 'emailAddress'});
+   email = email ? email.value : '';
+   $('.webid-email', info).html(email);
+
+   // add WebID uri link
+   $('.webid-uri', info).html('<a href="' + webid.uri + '">' + webid.uri +
+      '</a>');
+
+   // add WebID location
+   var locality = cert.subject.getField({name: 'localityName'});
+   locality = locality ? locality.value : 'Locality';
+   var state = cert.subject.getField({name: 'stateOrProvinceName'});
+   state = state ? state.value : 'State';
+   var country = cert.subject.getField({name: 'countryName'});
+   country = country ? country.value : 'Country';
+
+   $('.webid-location', info).html(locality + ', ' + state + ' - ' + country);
+
+   /* WebID Card Details */
+   var details = $('.webid-details', card);
+
    var attr;
    for(var n = 0; n < cert.subject.attributes.length; ++n)
    {
+      // dump all certificate details into WebID card details
       attr = cert.subject.attributes[n];
-      item.append('<p>' + attr.name + ': ' + attr.value + '</p>');
+      $(details).append('<div class="row"><span class="label">' + attr.name +
+         '</span><span class="value">' + attr.value + '</span></div>');
    }
+
+   // add details
+   $('.webid-modulus', details).html('<pre>' +
+      cert.publicKey.n.toString(16).replace(/(.{0,63})/g, '$1\n') + '</pre>');
+   $('.webid-exponent', details).html(cert.publicKey.e.toString(10));
+   $('.webid-pkey', details).html('<pre>' + webid.privateKey + '</pre>');
+   $('.webid-cert', details).html('<pre>' + webid.certificate + '</pre>');
    
-   return item;
+   return card;
 };
 
 var init = function($)
 {
-   var cat = 'web-id-login';
-   
+   var cat = 'webid-login';
+
+   /**
+    * Updates a status field on the page.
+    */
+   var setStatus = function(id, text, act, fade)
+   {
+      if(text != '')
+      {
+         forge.log.info(cat, text);
+      }
+
+      if(act)
+      {
+         text = '<img src="/login.gif" /> ' + text;
+      }
+
+      // stop any running/queued animations, replace the text,
+      // set to full opacity and show the element
+      $(id).stop(true).html(text).fadeTo(0, 1).show();
+
+      if(fade)
+      {
+         $(id).delay(2000).fadeOut();
+      }
+   };
+
    // local alias
    var forge = window.forge;
    try
@@ -242,7 +354,7 @@ var init = function($)
       options.host = forge.util.parseUrl(options.redirect).host;
       
       // show domain to login to on UI
-      $('#domain').html('`' + options.domain + '`');
+      $('.domain').html('`' + domain + '`');
       
       // get flash API
       options.flashApi = document.getElementById('socketPool');
@@ -281,24 +393,23 @@ var init = function($)
       
       // get web ids collection
       var webids = forge.util.getItem(
-         options.flashApi, 'forge.test.webid', 'webids');
+         options.flashApi, 'forge.test.webid', 'webids', ['flash', 'web']);
       webids = webids || {};
-      
-      // build web ID selection UI
+
+      // create list of WebID cards
       var id = 0;
       var list = $('<div></div>');
-      for(var name in webids)
+      for(var title in webids)
       {
-         var item = createWebIdItem(options, webid, ++id);
-         list.append(item);
+         list.append(createWebIdCard(options, title, webids[title], ++id));
       }
 
       if(list.children().length === 0)
       {
          list.append('You have no WebIDs.');
       }
-      
-      $('#webids').append(list);
+
+      $('#webid-cards').append(list);
    }
    catch(ex)
    {

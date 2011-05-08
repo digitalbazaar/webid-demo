@@ -12,7 +12,7 @@ body {
 color: #333;
 background-color: #fff;
 font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
-font-size: 11px;
+font-size: 12px;
 }
 
 a {
@@ -36,6 +36,10 @@ clear: both;
 display: none;
 }
 
+.left {
+float: left;
+}
+
 .right {
 float: right;
 }
@@ -53,6 +57,14 @@ padding: 4px;
 
 h1 {
 font-size: 24px;
+}
+
+#login #header {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+z-index: 1000;
 }
 
 #login h1 {
@@ -73,7 +85,7 @@ padding: 20px 0;
 }
 
 #login #content {
-padding: 5px;
+padding: 30px 5px 5px;
 }
 
 #footer {
@@ -88,7 +100,7 @@ margin: 10px;
 }
 
 #copyright {
-float: left;
+float: right;
 }
 
 #copyright a {
@@ -96,14 +108,13 @@ color: #aaa;
 }
 
 #legal {
-float: right;
 }
 
 /*-- Web IDs --*/
 .box {
 margin: 20px auto;
 padding: 15px;
-border: 1px solid #ccc;
+border: 1px solid #ddd;
 -moz-border-radius: 4px;
 -webkit-border-radius: 4px;
 }
@@ -111,9 +122,13 @@ border: 1px solid #ccc;
 .box h2 {
 margin-bottom: 10px;
 padding-bottom: 10px;
-border-bottom: 1px solid #ccc;
-font-size: 16px;
+border-bottom: 1px solid #ddd;
+font-size: 18px;
 line-height: 20px;
+}
+
+.inst {
+margin: 15px;
 }
 
 .row {
@@ -121,55 +136,82 @@ clear: left;
 margin: 10px 0;
 }
 
-label {
-color: #666;
-cursor: pointer;
-display: block;
+.label {
 float: left;
-font-weight: bold;
-padding: 3px 0;
-vertical-align: middle;
-width: 200px;
+width: 25%;
 }
 
-input {
-width: 300px;
-margin: 0;
+.value {
+display: block;
+margin-left: 210px;
+}
+
+.buttons {
+width: 400px;
+margin-left: 200px;
+text-align: right;
+}
+
+label {
+display: block;
+float: left;
+width: 25%;
+padding: 3px 0;
+vertical-align: middle;
+color: #666;
+font-weight: bold;
+}
+
+input, textarea {
+width: 392px;
 padding-bottom: 4px;
-border: 1px solid #390;
+border: 1px solid #888;
 padding: 3px;
 }
 
-button.green, button.red, button.blue {
-border: 0 none;
-color: #fff;
+button.control {
 cursor: pointer;
-display: inline-block;
-font-size: 13px;
-font-weight: bold;
-margin: 0;
 padding: 2px 6px;
-white-space: nowrap;
-text-align: center;
-background-color: #390;
-background-position: 0 -48px;
-border: 1px solid #6c0;
-border-color: #6c0 #160 #160 #160;
--moz-box-shadow: 0 1px 0 #ddd;
+background-color: #e3e3e3;
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f9f9f9', endColorstr='#e3e3e3');
+background: -moz-linear-gradient(top,  #f9f9f9,  #e3e3e3);
+background: -webkit-gradient(linear, left top, left bottom, from(#f9f9f9), to(#e3e3e3));
+border: 1px solid #ccc;
+border-bottom: 1px solid #aaa;
+-moz-border-radius: 3px;
+border-radius: 3px;
 }
 
-button.red {
-background-color: #c00;
-border-color: #e00 #900 #900 #900;
+button.control:hover, button.control:active {
+border-color: #aaa;
+background-color: #e3e3e3;
+background: -webkit-gradient(linear, left top, left bottom, from(#e3e3e3), to(#f9f9f9));
 }
 
-button.blue {
-background-color: #06c;
-border-color: #06e #039 #039 #039;
+button.control:active {
+background: inherit;
+background-color: #e3e3e3;
 }
 
-#b-clear {
-float: right;
+button.start {
+-moz-border-radius-topright: 0;
+-moz-border-radius-bottomright: 0;
+border-top-right-radius: 0;
+border-bottom-right-radius: 0;
+}
+
+button.middle {
+border-left: 0px solid #ccc;
+-moz-border-radius: 0;
+border-radius: 0;
+}
+
+button.end {
+border-left: 0px solid #ccc;
+-moz-border-radius-topleft: 0;
+-moz-border-radius-bottomleft: 0;
+border-top-left-radius: 0;
+border-bottom-left-radius: 0;
 }
 
 .error {
@@ -187,25 +229,78 @@ color: #dd3c10;
 }
 
 .status {
+font-size: 12px;
 font-weight: bold;
+line-height: 16px;
 }
 
-#webids {
+#webid-list {
 margin-top: 10px;
-padding: 5px;
-border: 1px solid #ddd;
+/*padding: 5px;
+border: 1px solid #ddd;*/
 }
 
 .webid {
-margin-bottom: 10px;
-padding-bottom: 10px;
-border-bottom: 1px dotted #ddd;
+clear: both;
+margin: 10px 0;
+padding: 10px;
+border: 1px solid #888;
+-moz-border-radius: 10px;
+border-radius: 10px;
 }
 
-.webid p {
-margin: 2px 0 2px 20px;
+.webid:hover {
+border-color: #390;
+-moz-box-shadow: 0 0 4px #ccc;
+-webkit-box-shadow: 0 0 4px #ccc;
+box-shadow: 0 0 4px #ccc;
+}
+
+.webid-image {
+float: left;
+width: 80px;
+margin-right: 10px;
+}
+
+.webid-info p {
+margin: 2px 0;
+}
+
+.webid-options {
+float: right;
+width: 160px;
+margin-left: 10px;
+text-align: right;
+}
+
+.webid-title {
+font-size: 1.17em;
+font-weight: bold;
+}
+
+.webid-details {
+margin-top: 10px;
+padding-top: 10px;
+border-top: 1px dotted #ddd;
+}
+
+.detail-title {
+font-size: 1.17em;
+font-weight: bold;
+}
+
+.webid-modulus {
+overflow: auto;
+}
+
+#advanced p {
+margin-left: 200px;
 }
 
 #options p {
 margin-left: 200px;
+}
+
+#notification {
+text-align: center;
 }

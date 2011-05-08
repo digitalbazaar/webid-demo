@@ -4,7 +4,16 @@
 if($_SERVER['REQUEST_METHOD'] === 'POST')
 {
    // FIXME: no checks on input, simple for demo
-   $nick = $_POST['nick'];
+   $id = $_POST['id'];
+   $uri = $_POST['uri'];
+   $title = $_POST['title'];
+   $name = $_POST['name'];
+   $email = $_POST['email'];
+   $locality = $_POST['locality'];
+   $state = $_POST['state'];
+   $country = $_POST['country'];
+   $org = $_POST['org'];
+   $orgUnit = $_POST['orgUnit'];
    $modulus = $_POST['modulus'];
 
    $rdf = <<<"EOD"
@@ -21,7 +30,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
 
   <rdf:Description rdf:about="#me">
     <rdf:type rdf:resource="http://xmlns.com/foaf/0.1/Person"/>
-    <ns0:nick>$nick</ns0:nick>
+    <ns0:nick>$name</ns0:nick>
     <ns0:homepage rdf:resource=""/>
   </rdf:Description>
 
@@ -43,32 +52,117 @@ if($_SERVER['REQUEST_METHOD'] === 'POST')
 </rdf:RDF>
 EOD;
 
-   $xhtmlrdfa = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML+RDFa 1.0//EN\"
- \"http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd\"> 
-<html version=\"XHTML+RDFa 1.0\" xmlns=\"http://www.w3.org/1999/xhtml\"
-   xmlns:foaf=\"http://xmlns.com/foaf/0.1/\"
-   xmlns:cert=\"http://www.w3.org/ns/auth/cert#\"
-   xmlns:rsa=\"http://www.w3.org/ns/auth/rsa#\">
+   $xhtmlrdfa = <<<"EOD"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+   "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html version="XHTML+RDFa 1.0" xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:cert="http://www.w3.org/ns/auth/cert#"
+   xmlns:rsa="http://www.w3.org/ns/auth/rsa#"
+   xmlns:ps="http://payswarm.com/vocab#"
+   xmlns:cmx="http://cmx.org/spec/terms#"
+   xmlns:microblog="http://example.org/microblog#">
 <head>
-   <title>WebID Profile: $nick</title>
+   <title>WebID Card: $title</title>
+   <link type="text/css" rel="stylesheet" media="all" href="/webid.css" />
 </head>
-<body typeof=\"foaf:PersonalProfileDocument\">
-
-   <div about=\"#me\" typeof=\"foaf:Person\">
-      Nickname: <span property=\"foaf:nick\">$nick</span>
-   </div>
-   
-   <div about=\"#cert\" typeof=\"rsa:RSAPublicKey\">
-      <span rel=\"cert:identity\" resource=\"#me\">Public Key for: $nick</span>
-      <div rel=\"rsa:modulus\" resource=\"#modulus\">
-         Modulus: <span property=\"cert:hex\">$modulus</span>
+<body typeof="foaf:PersonalProfileDocument">
+   <div id="container">
+      <div id="header">
+         <div class="col">
+            <h1>Digital Bazaar Public WebID</h1>
+         </div>
       </div>
-      <div rel=\"rsa:public_exponent\" resource=\"#public_exponent\">
-         Exponent: <span property=\"cert:decimal\">65537</span>
+
+      <div id="content" class="col">
+         <div id="webid-' + id + '" class="webid" about="#me" typeof="foaf:Person">
+            <div class="webid-image">
+               <img src="/identity.png" />
+            </div>
+
+            <div class="webid-info">
+               <p class="webid-title">$title</p>
+               <p class="webid-name" property="foaf:nick">$name</p>
+               <p class="webid-email">$email</p>
+               <p class="webid-location">$locality, $state $country</p>
+               <p class="webid-uri">$uri</p>
+            </div>
+            <div id="webid-details-' + id + '" class="webid-details clear">
+               <p class="detail-title">Providers</p>
+               <div class="row">
+                  <span class="label">PaySwarm</span>
+                  <span class="value"><a rel="ps:provider" href="http://payswarm.com">PaySwarm</a></span>
+               </div>
+               <div class="row">
+                  <span class="label">Music Registration</span>
+                  <span class="value"><a rel="cmx:provider" href="http://connectedmediaexperience.org/">Connected Media Experience</a></span>
+               </div>
+               <div class="row">
+                  <span class="label">Microblogging</span>
+                  <span class="value"><a rel="microblog:provider" href="http://twitter.com">Twitter</a></span>
+               </div>
+
+               <p class="detail-title">Public Key</p>
+               <div about="#cert" typeof="rsa:RSAPublicKey">
+                  <div class="row">
+                     <span class="label">Owner</span>
+                     <span rel="cert:identity" resource="#me">$name</span>
+                  </div>
+                  <div class="row" rel="rsa:modulus" resource="#modulus">
+                     <span class="label">Modulus</span>
+                     <span class="webid-modulus value" property="cert:hex">$modulus</span>
+                  </div>
+                  <div class="row" rel="rsa:public_exponent" resource="#public_exponent">
+                     <span class="label">Exponent</span>
+                     <span class="webid-exponent value" property="cert:decimal">65537</span>
+                  </div>
+               </div>
+            </div>
+            <div class="clear"></div>
+         </div>
       </div>
    </div>
 </body>
-</html>";  
+</html>
+EOD;
+
+   /*
+   $xhtmlrdfa = <<<"EOD"
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
+   "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html version="XHTML+RDFa 1.0" xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:foaf="http://xmlns.com/foaf/0.1/"
+   xmlns:cert="http://www.w3.org/ns/auth/cert#"
+   xmlns:rsa="http://www.w3.org/ns/auth/rsa#"
+   xmlns:ps="http://payswarm.com/vocab#"
+   xmlns:cmx="http://cmx.org/spec/terms#"
+   xmlns:microblog="http://example.org/microblog#">
+<head>
+   <title>WebID Profile: $cardname</title>
+   <link rel="stylesheet" type="text/css" media="all" href="/webid.css" />
+</head>
+<body typeof="foaf:PersonalProfileDocument">
+
+   <div about="#me" typeof="foaf:Person">
+      Nickname: <span property="foaf:nick">$cardname</span>
+      <a rel="ps:provider" href="http://payswarm.com/">PaySwarm</a>
+      <a rel="cmx:provider" href="http://connectedmediaexperience.org/">CME</a>
+      <a rel="microblog:provider" href="http://payswarm.com/">Twitter</a>
+   </div>
+
+   <div about="#cert" typeof="rsa:RSAPublicKey">
+      <span rel="cert:identity" resource="#me">Public Key for: $cardname</span>
+      <div rel="rsa:modulus" resource="#modulus">
+         Modulus: <span property="cert:hex">$modulus</span>
+      </div>
+      <div rel="rsa:public_exponent" resource="#public_exponent">
+         Exponent: <span property="cert:decimal">65537</span>
+      </div>
+   </div>
+</body>
+</html>
+EOD;
+   */
 
    // save input to database
    try
@@ -101,6 +195,9 @@ EOD;
 // retrieval
 else if($_SERVER['REQUEST_METHOD'] === 'GET')
 {
+   // check for application/rdf+xml, default to rdfa (application/xhtml+xml)
+   $rdf = strpos($_SERVER['HTTP_ACCEPT'], 'application/rdf+xml') !== false;
+
    // get from database
    try
    {
@@ -114,8 +211,9 @@ else if($_SERVER['REQUEST_METHOD'] === 'GET')
             (id TEXT, rdf TEXT, xhtmlrdfa TEXT, PRIMARY KEY (id))');
 
       // do select
-      $stmt = $dbh->prepare(
-         'SELECT rdf FROM webid WHERE id=:id');
+      $stmt = $dbh->prepare($rdf ?
+         'SELECT rdf FROM webid WHERE id=:id' :
+         'SELECT xhtmlrdfa FROM webid WHERE id=:id');
       $params = array(
          ':id' => $_GET['id']);
       $stmt->execute($params);
@@ -123,13 +221,29 @@ else if($_SERVER['REQUEST_METHOD'] === 'GET')
       if(count($rows) > 0)
       {
          // matching webID
-         header('Content-Type: application/rdf+xml');
-         echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
-         echo $rows[0]['rdf'];
+         if($rdf)
+         {
+            header('Content-Type: application/rdf+xml');
+            echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+            echo $rows[0]['rdf'];
+         }
+         else
+         {
+            // correct rdfa content type, but use text/html for IE since it
+            // can't display rdfa
+            $contentType = 'application/xhtml+xml';
+            $ua = $_SERVER['HTTP_USER_AGENT'];
+            if(strstr($ua, 'MSIE'))
+            {
+               $contentType = 'text/html';
+            }
+            header('Content-Type: ' . $contentType);
+            echo $rows[0]['xhtmlrdfa'];
+         }
       }
       else
       {
-         // no matchin webID
+         // no matching webID
          header('HTTP/1.0 404 Not Found');
       }
    }
