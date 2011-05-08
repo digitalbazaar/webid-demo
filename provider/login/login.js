@@ -350,11 +350,11 @@ var init = function($)
       {
          options.redirect = query.redirect[0];
       }
-      options.redirect = 'https://' + domain + '/' + redirect;
+      options.redirect = 'https://' + options.domain + '/' + options.redirect;
       options.host = forge.util.parseUrl(options.redirect).host;
       
       // show domain to login to on UI
-      $('.domain').html('`' + domain + '`');
+      $('.domain').html('`' + options.domain + '`');
       
       // get flash API
       options.flashApi = document.getElementById('socketPool');
