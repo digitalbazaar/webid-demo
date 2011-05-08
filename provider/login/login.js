@@ -80,7 +80,7 @@ var init = function($)
                // enable UI
                $('button.control').removeAttr('disabled');
                $('.webid[id!=webid-' + id + ']').fadeTo('fast', 1);
-               setStatus('#status-login', 'Logging in...', false, true);
+               setStatus('#status-login', 'Log in failed.', false, true);
             },
             xhr: forge.xhr.create
          });
@@ -183,7 +183,7 @@ var init = function($)
                // enable UI
                $('button.control').removeAttr('disabled');
                $('.webid[id!=webid-' + id + ']').fadeTo('fast', 1);
-               setStatus('#status-login', 'Logging in...', false, true);
+               setStatus('#status-login', 'Log in failed.', false, true);
             }
             window.location = options.redirect;
          };
