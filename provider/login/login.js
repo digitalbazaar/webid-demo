@@ -14,9 +14,17 @@
       // init page
       init($);
    };
+   var flashLoaded = function(e)
+   {
+      // no flash support
+      if(!e.success)
+      {
+         init($);
+      }
+   };
    swfobject.embedSWF(
       '/forge/SocketPool.swf', 'socketPool', '0', '0', '9.0.0',
-      false, {}, {allowscriptaccess: 'always'}, {});
+      false, {}, {allowscriptaccess: 'always'}, {}, flashLoaded);
 })(jQuery);
 
 var init = function($)
