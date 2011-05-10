@@ -576,6 +576,11 @@ ws.createServer(function(websocket)
    {
       sys.log('WebSocket closed');
    });
+   
+   websocket.addListener('error', function(e)
+   {
+      sys.log('Error: ' + JSON.stringify(e));
+   });
 }).listen(port);
 
 sys.log('WebSocket WebID server running on port ' + port);
