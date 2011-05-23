@@ -336,7 +336,10 @@ var authenticateWebId = function(c, state)
                      c.prepare(JSON.stringify(
                      {
                         success: true,
-                        cert: cert.subject,//certforge.pki.certificateToPem(cert),
+                        cert:
+                        {
+                           subject: cert.subject
+                        },//certforge.pki.certificateToPem(cert),
                         webID: url,
                         rdf: forge.util.encode64(body)
                      }));
