@@ -87,7 +87,7 @@ function get_certificate_info()
          $webID = $cert['extensions']['subjectAltName'];
          $webID = substr($webID, 4);
          $rval['webID'] = $webID;
-         $rval['cert'] = $_SERVER[SSL_CLIENT_CERT];
+         $rval['cert'] = $cert;
          $details = openssl_pkey_get_details($key);
          $rval['publicKey']['modulus'] = bin2hex($details['rsa']['n']);
          $rval['publicKey']['exponent'] = hexdec(bin2hex($details['rsa']['e']));
