@@ -25,7 +25,7 @@ function compare_public_keys($key1, $key2)
       $hexlen1 = strlen($hex1);
       $hex2 = strtoupper($key2['modulus']);
       $hexlen2 = strlen($hex2);
-      
+
       $rval = ($hex1len !== 0 and $hex2len !== 0);
       if($rval)
       {
@@ -40,7 +40,7 @@ function compare_public_keys($key1, $key2)
             $hex2 = '0' . $hex2;
             ++$hex2len;
          }
-         
+
          // compare hex
          $rval = ($hex1len === $hex2len);
          {
@@ -52,7 +52,7 @@ function compare_public_keys($key1, $key2)
          }
       }
    }
-   
+
    return $rval;
 }
 
@@ -60,7 +60,7 @@ function compare_public_keys($key1, $key2)
 function get_certificate_info()
 {
    $rval = array();
-   
+
    // check for client-side certificate
    if(!isset($_SERVER[SSL_CLIENT_CERT]) || $_SERVER[SSL_CLIENT_CERT] === '')
    {
@@ -71,7 +71,7 @@ function get_certificate_info()
       // get client-side certificate
       $cert = openssl_x509_parse($_SERVER[SSL_CLIENT_CERT]);
       $key = openssl_get_publickey($_SERVER[SSL_CLIENT_CERT]);
-      
+
       // check for web ID url
       if(!isset($cert['extensions']['subjectAltName']))
       {
@@ -87,14 +87,14 @@ function get_certificate_info()
          $webID = $cert['extensions']['subjectAltName'];
          $webID = substr($webID, 4);
          $rval['webID'] = $webID;
-         $rval['cert'] = $cert;
+         $rval['cert'] = $_SERVER[SSL_CLIENT_CERT];
          $details = openssl_pkey_get_details($key);
          $rval['publicKey']['modulus'] = bin2hex($details['rsa']['n']);
          $rval['publicKey']['exponent'] = hexdec(bin2hex($details['rsa']['e']));
          openssl_free_key($key);
       }
    }
-   
+
    return $rval;
 }
 
@@ -102,7 +102,7 @@ function get_certificate_info()
 function check_public_key($rdf, $webID, $publicKey)
 {
    $rval = false;
-   
+
    // sparql query to get public key modulus and exponent
    $publicKeyQuery = <<<"EOD"
 PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -114,12 +114,12 @@ OPTIONAL { ?m cert:hex ?mod. }
 OPTIONAL { ?e cert:decimal ?exp. }
 }
 EOD;
-   
+
    // create rdf model
    $world = librdf_php_get_world();
    $storage = librdf_new_storage($world, 'memory', NULL, NULL);
    $model = librdf_new_model($world, $storage, NULL);
-   
+
    // parse rdf data into model
    $uri = librdf_new_uri($world, $webID);
    $parser = librdf_new_parser($world, 'rdfxml', 'application/rdf+xml', NULL);
@@ -136,14 +136,14 @@ EOD;
       // do sparql query
       $query = librdf_new_query($world, 'sparql', NULL, $publicKeyQuery, NULL);
       $rs = librdf_model_query_execute($model, $query);
-      
+
       // check for a public key that matches
       while(!$rval and $rs and !librdf_query_results_finished($rs))
       {
          // FIXME: better error checking needed
          $mn = librdf_query_results_get_binding_value_by_name($rs, 'm');
          $en = librdf_query_results_get_binding_value_by_name($rs, 'e');
-         
+
          if(librdf_node_get_type($mn) != LIBRDF_NODE_TYPE_LITERAL)
          {
             librdf_free_node($mn);
@@ -154,22 +154,22 @@ EOD;
             librdf_free_node($en);
             $en = librdf_query_results_get_binding_value_by_name($rs, 'exp');
          }
-         
+
          if(librdf_node_get_type($mn) != LIBRDF_NODE_TYPE_LITERAL and
             librdf_node_get_type($en) != LIBRDF_NODE_TYPE_LITERAL)
          {
             $key = array();
             $key['modulus'] = librdf_node_get_literal_value($mn);
             $key['exponent'] = librdf_node_get_literal_value($en);
-            
+
             // check public key
             $rval = compare_public_keys($key, $publicKey);
          }
-         
+
          // clean up
          librdf_free_node($mn);
          librdf_free_node($en);
-         
+
          // match not found, go to next result
          if(!$rval)
          {
@@ -177,11 +177,11 @@ EOD;
          }
       }
    }
-   
+
    // clean up
    librdf_free_model($model);
    librdf_free_storage($storage);
-   
+
    return $rval;
 }
 

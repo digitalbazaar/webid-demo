@@ -4,6 +4,7 @@ $cookie = $_COOKIE['webid'];
 if(isset($cookie))
 {
    $cookie = json_decode(urldecode($cookie));
+   $cookie->cert = openssl_x509_parse($cookie->cert);
 }
 $rdf = $_COOKIE['rdf'];
 if(isset($rdf))
